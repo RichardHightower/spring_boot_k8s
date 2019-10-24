@@ -90,7 +90,7 @@ $ curl http://localhost:8080/manage/info | jq .
 ### Run app from command line w/o docker or k8s
 
 ```sh
-mvn clean package && java -jar target/spring_boot_k8s-0.1.0.jar
+mvn clean package && java -jar target/spring_boot_k8s-0.4.0.jar
 ```
 
 ### Build docker image 
@@ -127,6 +127,13 @@ mvn dockerfile:build
 mvn dockerfile:push
 ```
 
+
+```shell script
+mvn clean package
+docker build -t cloudurable/spring_boot_k8s:0.4.0 .
+docker push cloudurable/spring_boot_k8s:0.4.0
+
+```
 Not sure why, but dockerfile:push did not work. 
 I had to run: 
 
@@ -314,6 +321,18 @@ Now test it
 
 ## Run health checks and app
 
+Reinstall 
+
+```shell script
+helm del --purge hello
+helm install --name hello ./hello
+export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services hello)
+export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+echo http://$NODE_IP:$NODE_PORT
+curl http://$NODE_IP:$NODE_PORT ; echo " "
+
+```
+
 ```sh
  curl  http://$NODE_IP:$NODE_PORT  ; echo " "
 ```
@@ -323,6 +342,7 @@ Now test it
 ```
 
 ```sh 
+ curl -X POST http://$NODE_IP:$NODE_PORT/health/conf ; echo " "
  curl -X POST http://$NODE_IP:$NODE_PORT/health/conf ; echo " "
 ```
 
