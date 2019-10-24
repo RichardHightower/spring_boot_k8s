@@ -251,6 +251,11 @@ affinity: {}
 
 ```sh
 
+cd src/helm/
+
+pwd
+../spring_boot_k8s/src/helm
+
 helm install --name hello ./hello
 
 ```
@@ -305,3 +310,24 @@ kubectl port-forward $POD_NAME 8080:8080
 ```
 
 Now test it
+
+
+## Run health checks and app
+
+```sh
+ curl  http://$NODE_IP:$NODE_PORT  ; echo " "
+```
+
+```sh
+ curl  http://$NODE_IP:$NODE_PORT/manage/health | jq . ; echo " "
+```
+
+```sh 
+ curl -X POST http://$NODE_IP:$NODE_PORT/health/conf ; echo " "
+```
+
+```sh
+
+kubectl describe pod hello-5fcf86b7f6-9skg5
+
+```
